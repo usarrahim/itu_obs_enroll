@@ -32,7 +32,7 @@ with the university's terms of use, rate limits, and academic integrity policies
 2. Clone the repository:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/usarrahim/itu_obs_enroll.git
 cd itu_obs_enroll
 ```
 
