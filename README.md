@@ -28,7 +28,7 @@ ve akademik etik kuralları tamamen sizin sorumluluğunuzdadır.
 
 ```bash
 git clone <repo-url>
-cd pub-ke-uti
+cd itu_obs_enroll
 ```
 
 3. Sanal ortam (isteğe bağlı ama tavsiye edilir):
