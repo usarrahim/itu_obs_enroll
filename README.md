@@ -1,15 +1,19 @@
 ## ITU OBS Enrollment Helper
 
 This repository contains a small Python script that helps automate course enrollment on
-ITU OBS at an exact target time. The script:
+ITU OBS at an exact target time.
 
-- Logs into OBS using a real Chromium browser controlled by Playwright.
+![ITU OBS Enroll GUI](gui.png)
+
+The tool:
+
+- Logs into OBS using a Chromium browser controlled by Playwright.
 - Retrieves a JWT bearer token via the official OBS endpoint.
-- Sends a course enrollment request at the exact time you specify.
-- Allows additional requests in the same session if needed.
+- Sends a course enrollment request at a precise time.
+- Can send additional requests in the same session if needed.
 
-This project is intended for **personal use only**. You are solely responsible for complying
-with your university's terms of use, rate limits, and academic integrity policies.
+This project is intended for **personal use only**. Each user is responsible for complying
+with the university's terms of use, rate limits, and academic integrity policies.
 
 ---
 
@@ -60,21 +64,21 @@ python itu_obs_enroll.py
 
 ### Graphical user interface
 
-If you prefer a simple graphical UI instead of the terminal, run:
+To use the graphical UI instead of the terminal, run:
 
 ```bash
 python itu_obs_enroll_gui.py
 ```
 
-The window lets you enter:
+The window contains fields for:
 
 - OBS username and password
 - Target time
 - ADD and DROP CRN lists
 
-Then it logs into OBS, waits until the target time and fires a single enrollment request, showing
-status, headers and body in the log area. You can take a screenshot of this window for your GitHub
-README or documentation if you like.
+After the values are provided and the button is pressed, the application logs into OBS, waits
+until the target time and sends a single enrollment request. Status, headers and body are shown
+in the log area at the bottom of the window.
 
 If you save a screenshot as `gui.png` in the project root, you can show it in this README:
 
