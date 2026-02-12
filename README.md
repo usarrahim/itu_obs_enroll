@@ -1,87 +1,98 @@
-## ITU OBS Auto Enrollment Script
+## İTÜ OBS Ders Kayıt Otomasyon Scripti
 
-Simple Python script to automate course enrollment on ITU OBS.
+Bu repo, İTÜ OBS ders kayıt ekranına tam saatinde istek atmak için yazılmış,
+minimal bir Python scripti içerir. Script:
 
-- **TIME mode** – fire once at an exact time (ms precision) for selected CRNs.
-- **WATCH mode** – continuously watch quota for selected CRNs and auto-enroll when a seat appears, plus periodic direct enroll attempts.
+- Playwright ile OBS'e tarayıcı üzerinden giriş yapar.
+- JWT Bearer token alır.
+- Belirlediğiniz hedef zamanda, girdiğiniz CRN listesi ile OBS ders kayıt API'sine istek gönderir.
+- İsterseniz aynı oturumla ek istekler atmanıza izin verir.
 
-The script runs in terminal and uses official OBS endpoints.
-
----
-
-## Quick start
-
-1. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   # optional but recommended for robust login:
-   playwright install chromium
-   ```
-
-2. Create `.env` from the template:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Edit `.env` (minimal setup):
-
-   ```env
-   MODE=WATCH               # or TIME
-   ITU_USERNAME=your_itu_username
-   ITU_PASSWORD=your_itu_password
-
-   TARGET_TIME=14:00:00.400
-   TIME_CRNS=EHB:22007,MYZ:23622
-
-   WATCH_CRNS=EHB:23603,MYZ:23622
-   ```
-
-4. Run:
-
-   ```bash
-   python itu_obs_ders_kayit.py
-   ```
+Bu proje yalnızca **kişisel kullanım** içindir. Üniversitenin kullanım şartları, hız limitleri
+ve akademik etik kuralları tamamen sizin sorumluluğunuzdadır.
 
 ---
 
-## Modes and CRN format
+## İçerik
 
-- All CRNs are written as **`BRANCH:CRN`**, for example:
-  - `EHB:23603`
-  - `MYZ:23622`
-
-- The script:
-  - Splits these into branch codes (`EHB`, `MYZ`, etc.) and CRNs (`23603`, `23622`).
-  - Looks up branch codes in `derskodları.json` to find the correct `bransKoduId`.
-  - Calls the appropriate `DersProgramSearch` URLs.
-  - Sends **only CRN numbers** to `POST https://obs.itu.edu.tr/api/ders-kayit/v21`.
-
-### TIME mode (`MODE=TIME`)
-
-- Uses `TARGET_TIME` and `TIME_CRNS`.
-- At `TARGET_TIME` (with milliseconds) sends a single enrollment request for all `TIME_CRNS`.
-- Prints full HTTP response and exits.
-
-### WATCH mode (`MODE=WATCH`)
-
-- Uses `WATCH_CRNS`.
-- Continuously:
-  - Fetches course tables for all branches referenced in `WATCH_CRNS`.
-  - Prints quota for each watched CRN.
-  - If available seats exist, sends an enrollment request and prints the response.
-  - Additionally, sends a direct enrollment request for all `WATCH_CRNS` every fixed interval.
+- `itu_obs_enroll.py`: Ana script, kullanıcıdan bilgileri alır ve istekleri yapar.
+- `obs_login.py`: Playwright kullanarak OBS'e login olup JWT token alan yardımcı modül.
+- `requirements.txt`: Gerekli Python paketleri.
 
 ---
 
-## Files
+## Kurulum
 
-- `itu_obs_ders_kayit.py` – main script.
-- `obs_login.py` – optional Playwright-based login helper.
-- `derskodları.json` – mapping of department codes to `bransKoduId`.
-- `requirements.txt` – Python dependencies.
-- `.env.example` – example environment file (copy to `.env` and edit).
+1. Python 3.10+ kurulu olduğundan emin olun.
+2. Depoyu klonlayın:
 
-**Important:** never commit your real `.env` (with credentials) to GitHub.
+```bash
+git clone <repo-url>
+cd pub-ke-uti
+```
+
+3. Sanal ortam (isteğe bağlı ama tavsiye edilir):
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+# veya
+source .venv/bin/activate  # macOS / Linux
+```
+
+4. Bağımlılıkları yükleyin:
+
+```bash
+pip install -r requirements.txt
+playwright install chromium
+```
+
+---
+
+## Kullanım
+
+Ana script:
+
+```bash
+python itu_obs_enroll.py
+```
+
+Script sizden sırayla şunları ister:
+
+1. **OBS kullanıcı adın (e-posta)**  
+2. **OBS şifren** (terminalde gizli girilir)  
+3. **Hedef saat** (örneğin `14:00:00.500`)  
+4. **ADD (ECRN) CRN listesi**  
+   - Örnek: `12345, 23456, 34567`
+   - Boş bırakırsanız ekleme yapılmaz.
+5. **DROP (SCRN) CRN listesi**  
+   - Örnek: `11111, 22222`
+   - Boş bırakırsanız ders bırakma yapılmaz.
+
+Ardından:
+
+- Playwright ile OBS'e otomatik giriş yapılır.
+- `obs_login.py` içindeki akış, `/ogrenci/auth/jwt` endpoint'inden JWT token almaya çalışır.
+- Token alındıktan sonra script hedef saate kadar bekler ve tek seferlik kayıt isteği gönderir.
+- Sonrasında terminalde `"1"` + Enter tuşlayarak aynı oturumla ek istekler atabilirsiniz.
+
+---
+
+## Güvenlik Notları
+
+- Kullanıcı adı ve şifre **asla koda yazılmamalıdır**. Script bu bilgileri her çalıştırmada
+  terminalden ister.
+- Depoyu GitHub'a atarken `.env` dosyası kullanıyorsanız, `.gitignore` zaten `.env` satırını
+  içerir; yine de hassas bilgileri commit etmediğinizden emin olun.
+- OBS tarafındaki endpointler ve davranışlar zamanla değişebilir. Bu durumda özellikle
+  `obs_login.py` içindeki login / JWT alma akışını güncellemeniz gerekebilir.
+
+---
+
+## Hukuki / Etik Sorumluluk
+
+- Bu proje resmi bir İTÜ ürünü değildir.
+- Kullanımınızdan doğan her türlü sorumluluk size aittir.
+- Üniversitenin otomasyon sistemi için belirlediği kuralları, hız limitlerini ve kullanım
+  koşullarını ihlal etmeyecek şekilde kullanmanız gerekir.
 
