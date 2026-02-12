@@ -80,12 +80,6 @@ After the values are provided and the button is pressed, the application logs in
 until the target time and sends a single enrollment request. Status, headers and body are shown
 in the log area at the bottom of the window.
 
-If you save a screenshot as `gui.png` in the project root, you can show it in this README:
-
-```markdown
-![ITU OBS Enroll GUI](gui.png)
-```
-
 The script will ask for the following values in order:
 
 1. **OBS username (email)**
