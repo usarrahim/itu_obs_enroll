@@ -15,7 +15,8 @@ with your university's terms of use, rate limits, and academic integrity policie
 
 ## Contents
 
-- `itu_obs_enroll.py`: Main script. Collects user input and sends enrollment requests.
+- `itu_obs_enroll.py`: Main CLI script. Collects user input and sends enrollment requests.
+- `itu_obs_enroll_gui.py`: Graphical user interface for configuring and starting a timed enrollment.
 - `obs_login.py`: Helper module that logs into OBS with Playwright and fetches a JWT token.
 - `requirements.txt`: Python dependencies.
 
@@ -51,10 +52,34 @@ playwright install chromium
 
 ## Usage
 
-Run the main script:
+Run the main CLI script:
 
 ```bash
 python itu_obs_enroll.py
+```
+
+### Graphical user interface
+
+If you prefer a simple graphical UI instead of the terminal, run:
+
+```bash
+python itu_obs_enroll_gui.py
+```
+
+The window lets you enter:
+
+- OBS username and password
+- Target time
+- ADD and DROP CRN lists
+
+Then it logs into OBS, waits until the target time and fires a single enrollment request, showing
+status, headers and body in the log area. You can take a screenshot of this window for your GitHub
+README or documentation if you like.
+
+If you save a screenshot as `gui.png` in the project root, you can show it in this README:
+
+```markdown
+![ITU OBS Enroll GUI](gui.png)
 ```
 
 The script will ask for the following values in order:
